@@ -1,8 +1,6 @@
 package com.liubiao1.leetcode.array;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * 给定一个整数数组 prices ，它的第 i 个元素 prices[i] 是一支给定的股票在第 i 天的价格。
@@ -38,38 +36,42 @@ import java.util.TreeMap;
  *
  * @author mc0710
  */
-public class Solution188 {
-    private static int k = 10;
-    private static int[] g = {2, 4, 1};
+public class Solution188T {
+    private static int k = 1;
+    private static int[] g = {2,4,1,3,2,6,5,0,3};
     private static int[] g1 = {3, 2, 6, 5, 0, 3};
 
     /**
-     * 解题思路：每天都交易，将血赚的交易存到map里，key为第几天买的，value为血赚多少
+     * 解题思路：每天都交易，将血赚的交易存到list里；交易次数大于等于list长度证明可以获得所有收益，小于时，移除最小收益交易；
      *
      * @param k      允许买卖次数
      * @param prices 每天的交易价格数组
      * @return 最多血赚多少
      */
     public static int maxProfit(int k, int[] prices) {
-        Map<Integer, Integer> map = new TreeMap<>();
+        List<Integer> list = new ArrayList<>();
         int result = 0;
         if (prices.length <= 1) {
             return result;
         }
         for (int i = 1; i < prices.length; i++) {
-            if (prices[i] > prices[i - 1]) {
-                map.put(i - 1, prices[i] - prices[i - 1]);
+                list.add(prices[i] - prices[i - 1]);
+        }
+        if (k < list.size()) {
+            // 需要移除list里几个元素
+            Collections.sort(list);
+            int r = list.size() - k;
+            for (int i = 0; i < r; i++) {
+                list.remove(0);
             }
         }
-//        if (k >= map.size()) {
-//            result = map.values().stream().mapToInt((x, y) -> x + y).sum();
-//        }
+        result = list.stream().mapToInt(Integer::intValue).sum();
         return result;
     }
 
     public static void main(String[] args) {
         System.out.println(maxProfit(k, g));
-        System.out.println(maxProfit(k, g1));
+//        System.out.println(maxProfit(k, g1));
     }
 
 }
